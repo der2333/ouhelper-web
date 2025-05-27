@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>选课表生成</title>
+    <style>
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f8f8f8;
+            color: #213547;
+        }
+
+        button {
+            padding: 12px 24px;
+            font-size: 16px;
+            font-weight: 600;
+            background-color: #42b883;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.25s;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        button:hover {
+            background-color: #33a06f;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+        }
+
+        .upload-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        .file-label {
+            padding: 12px 24px;
+            font-size: 16px;
+            font-weight: 600;
+            background-color: #42b883;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.25s;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .file-label:hover {
+            background-color: #33a06f;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+        }
+
+        .file-name {
+            margin-top: 8px;
+            font-size: 14px;
+            color: #666;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="upload-container">
+        <label for="fileInput" class="file-label">选择 Excel 文件</label>
+        <input type="file" id="fileInput" accept=".xlsx, .xls">
+        <div id="fileNameDisplay" class="file-name"></div>
+        <button id="uploadBtn">上传</button>
+    </div>
+    <script>
+        document.getElementById('fileInput').addEventListener('change', function () {
+            const fileNameDisplay = document.getElementById('fileNameDisplay');
+            if (this.files.length > 0) {
+                fileNameDisplay.textContent = '已选择文件: ' + this.files[0].name;
+            } else {
+                fileNameDisplay.textContent = '';
+            }
+        });
+
+        document.getElementById('uploadBtn').addEventListener('click', function () {
+            const fileInput = document.getElementById('fileInput');
+            if (fileInput.files.length > 0) {
+                const formData = new FormData();
+                formData.append('file', fileInput.files[0]);
+
+                fetch('/api/upload/xuanke', {
+                    method: 'POST',
+                    body: formData,
+                }).then(response => {
+                    if (response.ok) {
+                        return response.blob();
+                    } else {
+                        throw new Error('文件上传失败，请重试。');
+                    }
+                }).then(blob => {
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = '选课表.xlsx';
+                    document.body.appendChild(a);
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                    document.body.removeChild(a);
+                    alert('文件处理成功！');
+                }).catch(error => {
+                    console.error('Error:', error);
+                    alert(error.message);
+                });
+            } else {
+                alert('请先选择一个文件。');
+            }
+        });
+    </script>
+</body>
+
+</html>
