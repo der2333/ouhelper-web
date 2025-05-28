@@ -9,9 +9,18 @@ upload_file = APIRouter()
 
 @upload_file.post("/api/upload/xuanke")
 async def xuanke_file(file: UploadFile) -> StreamingResponse:
+    """
+    上传选课文件并生成处理后的 Excel 文件
+
+    参数:
+        file (UploadFile): 上传的 Excel 文件
+
+    返回值:
+        StreamingResponse: 包含处理后的 Excel 文件的流式响应
+    """
     try:
         df_origin = polars.read_excel(
-            source=file.file,
+            source=file.file.read(),
             raise_if_empty=False,
             infer_schema_length=0,
         )

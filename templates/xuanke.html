@@ -110,7 +110,9 @@
                     const url = window.URL.createObjectURL(blob);
                     const a = document.createElement('a');
                     a.href = url;
-                    a.download = '选课表.xlsx';
+                    const originalFileName = fileInput.files[0].name;
+                    const fileNameWithoutExtension = originalFileName.substring(0, originalFileName.lastIndexOf('.')) || originalFileName;
+                    a.download = fileNameWithoutExtension + '选课表.xlsx';
                     document.body.appendChild(a);
                     a.click();
                     window.URL.revokeObjectURL(url);
