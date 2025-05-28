@@ -11,7 +11,10 @@ async def generate_xuanke_df(df_origin: DataFrame) -> DataFrame:
     返回值:
         df_output: 包含行号、列号的DataFrame
     """
-    output = []  # 初始化输出列表，用于存储包含特定符号的单元格信息
+
+    # 初始化输出列表，用于存储包含特定符号的单元格信息
+    output: list[dict[str, str]] = []
+
     columns = df_origin.columns  # 获取DataFrame的所有列名
 
     for row_idx in range(df_origin.height):  # 遍历每一行
