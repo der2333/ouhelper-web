@@ -97,7 +97,7 @@
                 const formData = new FormData();
                 formData.append('file', fileInput.files[0]);
 
-                fetch('/api/upload/xuanke', {
+                fetch('/api/upload/get_course_import_table', {
                     method: 'POST',
                     body: formData,
                 }).then(response => {

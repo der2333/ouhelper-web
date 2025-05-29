@@ -1,3 +1,3 @@
-from .xuanke import generate_xuanke_df
+from .get_course_import_df import get_course_import_df
 
-__all__ = ("generate_xuanke_df",)
+__all__ = ("get_course_import_df",)
